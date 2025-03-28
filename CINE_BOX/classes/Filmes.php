@@ -1,34 +1,43 @@
 <?php
 class Filmes
 {
-    
-        public function exibirlistaFilmes($limite = ''){
-            
-            
+    public $conexaoBanco;
 
-            $dsn = 'mysql:dbname=db_cinebox;host=127.0.0.1';
-            $user = 'root'; 
-            $password = '';
-            $auxScript = '';
+    public function __construct()
+    {
 
-            $banco = new PDO($dsn, $user, $password);
+        $dsn = 'mysql:dbname=db_cinebox;host=127.0.0.1';
+        $user = 'root';
+        $password = '';
 
 
+        $this->conexaoBanco = new PDO($dsn, $user, $password);
+    }
 
-            if(!empty($limite))
-            {
 
-                $auxScript = " ORDER BY RAND() LIMIT {$limite}";
+    public function exibirlistaFilmes($limite = '')
+    {
+        $auxScript = '';
 
-            }
+        
 
-            
-            $script = 'SELECT * FROM tb_filmes' .$auxScript;
 
-            return  $banco->query($script)->fetchAll();
-            
-            
 
+        if (!empty($limite)) {
+
+            $auxScript = " ORDER BY RAND() LIMIT {$limite}";
         }
-    
+
+
+        $script = 'SELECT * FROM tb_filmes' . $auxScript;
+
+        return $this->conexaoBanco->query($script)->fetchAll();
+    }
+
+    public function consultarFilmesById($id_filme) {
+
+        $script = "SELECT * FROM tb_filmes WHERE id = {$id_filme}";
+
+        return $this->conexaoBanco->query($script)->fetch();
+    }
 }
